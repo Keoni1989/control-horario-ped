@@ -2,34 +2,45 @@
 
 Backend proof of concept for attendance management in vocational training courses, built with FastAPI.
 
-## What this project is
+## Why I built it
 
-This repository is a backend proof of concept. It demonstrates a simple API for:
+This project started from a real need: replacing paper attendance sheets with a digital system that could make attendance records more reliable and reduce invalid check-ins.
+
+The idea was to combine classroom sessions, QR token validation, IP checks and a simple check-in/check-out flow.
+
+## Overview
+
+The API currently supports:
 
 - checking whether an active classroom session exists;
 - validating a QR token and classroom IP access;
-- registering check-in and check-out for students;
-- seeding demo data locally for manual testing.
-
-It is intentionally not a full production system. The goal is to show backend fundamentals clearly and honestly.
+- registering student check-in and check-out;
+- storing attendance records in a relational database;
+- generating synthetic demo data for local testing.
 
 ## Current scope
 
 ### Implemented
 
 - FastAPI REST API
-- SQLite persistence via SQLAlchemy
-- Session lookup by classroom and date
-- IP-based access control for classroom sessions
-- Check-in and check-out flow
-- Demo seed data
+- SQLite persistence with SQLAlchemy
+- Classroom and session management
+- Active session lookup
+- IP-based access validation
+- QR token validation
+- Student check-in and check-out
+- Synthetic demo seed data
+- Automated tests for the main attendance flow
 
 ### Not implemented
 
-- Real authentication for admins
-- Frontend UI
-- Production-grade security hardening
-- Advanced reporting or QR generation features
+- Frontend interface
+- Administrator authentication
+- QR code generation
+- Advanced reporting
+- Production deployment and security hardening
+
+This repository should be considered a backend proof of concept, not a production-ready attendance system.
 
 ## Tech stack
 
@@ -37,39 +48,60 @@ It is intentionally not a full production system. The goal is to show backend fu
 - FastAPI
 - SQLAlchemy
 - SQLite
+- Pydantic
 - pytest
 
 ## Installation
 
-From the backend folder:
+Clone the repository and open the backend folder:
+
+```bash
+cd backend
+```
+
+Create and activate a virtual environment:
 
 ```bash
 python -m venv .venv
 .\.venv\Scripts\activate
+```
+
+Install the runtime dependencies:
+
+```bash
 pip install -r requirements.txt
+```
+
+To run the tests, also install the development dependencies:
+
+```bash
 pip install -r requirements-dev.txt
 ```
 
 ## Environment
 
-Copy the example file and adjust the database URL if needed:
+Copy the example environment file:
 
 ```bash
 copy .env.example .env
 ```
 
-The project uses DATABASE_URL from the environment. If it is not set, it falls back to a local SQLite file inside the backend folder.
+The application reads `DATABASE_URL` from the environment.
+
+When the variable is not configured, it uses a local SQLite database inside the backend folder.
 
 ## Run locally
+
+Start the API with:
 
 ```bash
 uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 
-Then open:
+Available endpoints:
 
-- http://127.0.0.1:8000/health
-- http://127.0.0.1:8000/docs
+- API health check: `http://127.0.0.1:8000/health`
+- Interactive API documentation: `http://127.0.0.1:8000/docs`
 
 ## Seed demo data
 
@@ -79,11 +111,13 @@ Run:
 python app/seed.py
 ```
 
-This creates demo data with synthetic names and identifiers.
+The seed creates fictional courses, classrooms, teachers and students for local testing.
+
+All names and identifiers included in the repository are synthetic.
 
 ## Example API flow
 
-### Get active session
+### Get the active classroom session
 
 ```bash
 curl http://127.0.0.1:8000/classrooms/AULA-1/active-session
@@ -107,9 +141,25 @@ curl -X POST http://127.0.0.1:8000/attendance/check-out \
 
 ## Testing
 
-Run:
+Run the automated tests from the backend folder:
 
 ```bash
+pytest -q
+```
+
+The test suite covers:
+
+- API health check;
+- root endpoint;
+- invalid attendance requests;
+- missing active sessions;
+- the complete active session, check-in and check-out flow using an isolated temporary database.
+
+## Status
+
+Working backend proof of concept.
+
+The main attendance flow is implemented and tested. Future development could include an administration interface, reporting tools and stronger authentication.
 pytest -q
 ```
 
