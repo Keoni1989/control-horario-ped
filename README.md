@@ -160,9 +160,3 @@ The test suite covers:
 Working backend proof of concept.
 
 The main attendance flow is implemented and tested. Future development could include an administration interface, reporting tools and stronger authentication.
-pytest -q
-```
-
-## Status
-
-Backend proof of concept, suitable for junior portfolio review.
